@@ -1,42 +1,50 @@
-package client;
-
+package client.Core;
 
 import java.io.*;
 import java.net.*;
+import java.util.Observable;
+import java.util.Observer;
+import com.google.gson.Gson;
 
-public class Client {
+public class Client extends Observable {
+
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
     private BufferedReader consoleInput;
+    
+    public Client(Observer obs) {
+        this.addObserver(obs);
+    }
 
-    public Client(String serverAddress, int port) {
+    public Client() {
+    }
+    
+    public void SendMess(String mess) {
+        out.println(mess);
+        out.flush();
+    }
+    
+    @Override
+    public void notifyObservers() {
+        setChanged();
+        super.notifyObservers();
+    }
+
+    public boolean StartConnect(String serverAddress, int port) {
         try {
             socket = new Socket(serverAddress, port);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            consoleInput = new BufferedReader(new InputStreamReader(System.in));
-
-            // Start a thread to listen for incoming messages from the server
-            new Thread(new IncomingMessagesHandler()).start();
-
-            // Read messages from the console and send to the server
-            String message;
-            while ((message = consoleInput.readLine()) != null) {
-                out.println(message);
-                if (message.equalsIgnoreCase("exit")) {
-                    break;
-                }
-            }
-        } catch (IOException e) {
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return false;
         }
+    }
+
+    public void StartThreadHandle() {
+       new Thread(new IncomingMessagesHandler()).start();
     }
 
     // Thread to handle incoming messages from the server
@@ -53,8 +61,12 @@ public class Client {
             }
         }
     }
+    
+    
+    
+    
 
     public static void main(String[] args) {
-        new Client("localhost", 12345); // Connect to the server running on localhost
+//        new Client("localhost", 12345); // Connect to the server running on localhost
     }
 }

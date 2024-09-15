@@ -9,7 +9,7 @@ public class Server {
     private static Set<ClientHandler> clientHandlers = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(12345);
+        ServerSocket serverSocket = new ServerSocket(2302);
         System.out.println("Chat server started...");
 
         while (true) {
