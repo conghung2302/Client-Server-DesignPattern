@@ -1,16 +1,39 @@
 package client.Interface;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.net.Socket;
+import java.util.Observable;
+import java.util.Observer;
+import client.Core.ClientManager;
+import client.Model.Message;
+import client.Model.MessageType;
+import client.Model.Status;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author hungkiller
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame implements Observer {
 
-    /**
-     * Creates new form Login
-     */
     public Login() {
         initComponents();
+        init();
+    }
+
+    void init() {
+        this.setVisible(true);
+//        this.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent evt) {
+//                Message message = new Message("Leave", MessageType.LEAVE);
+//                ClientManager.client.SendMess(ClientManager.gson.toJson(message));
+//            }
+//
+//            public void windowOpened(WindowEvent evt) {
+//            }
+//        });
     }
 
     @SuppressWarnings("unchecked")
@@ -22,7 +45,14 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        txtName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
         btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -49,7 +79,13 @@ public class Login extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        Message mess = new Message(txtName.getText().trim(), MessageType.LOGIN, Status.OK);
+        ClientManager.client.SendMess(ClientManager.gson.toJson(mess));
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -90,4 +126,23 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object arg) {
+        String obj = (String) arg;
+        Message message = ClientManager.gson.fromJson(obj, Message.class);
+                
+        switch (message.type) {
+            case LOGIN:
+                if (message.status == Status.OK) {
+                    this.dispose();
+                    new Chat().setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, message.content, "ERORR", JOptionPane.INFORMATION_MESSAGE);
+                }
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
 }

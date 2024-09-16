@@ -4,21 +4,18 @@ package client.Model;
  *
  * @author hungkiller
  */
-public class Message {
+public class Message<T>{
 
-    private String message;
-    private MessageType type;
 
-    public Message(String message, MessageType type) {
-        this.message = message;
+
+    public T content;
+    public MessageType type;
+    public Status status;
+
+    public Message(T content, MessageType type, Status status) {
+        this.content = content;
         this.type = type;
+        this.status = status;
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
+    
 }

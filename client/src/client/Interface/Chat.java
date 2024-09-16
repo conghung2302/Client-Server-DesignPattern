@@ -1,6 +1,6 @@
 package client.Interface;
 
-import main.StartClient;
+import client.Core.ClientManager;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,7 +12,7 @@ public class Chat extends javax.swing.JFrame implements Observer {
 
     public Chat() {
         initComponents();
-        main.StartClient.client.addObserver(this);
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +74,7 @@ public class Chat extends javax.swing.JFrame implements Observer {
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
         String mess = txtChat.getText().trim();
-        StartClient.client.SendMess(mess);
+        ClientManager.client.SendMess(mess);
     }//GEN-LAST:event_btnSendActionPerformed
 
     public static void main(String args[]) {
