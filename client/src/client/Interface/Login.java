@@ -25,16 +25,18 @@ public class Login extends javax.swing.JFrame implements Observer {
 
     void init() {
         ClientManager.client.addObserver(this);
-        this.setVisible(true);
-//        this.addWindowListener(new WindowAdapter() {
-//            public void windowClosing(WindowEvent evt) {
-//                Message message = new Message("Leave", MessageType.LEAVE);
+        
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                System.out.println("client close");
+//                Message message = new Message("client Exit", MessageType.EXIT, Status.OK);
 //                ClientManager.client.SendMess(ClientManager.gson.toJson(message));
-//            }
-//
-//            public void windowOpened(WindowEvent evt) {
-//            }
-//        });
+                      
+            }
+
+            public void windowOpened(WindowEvent evt) {
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -44,7 +46,7 @@ public class Login extends javax.swing.JFrame implements Observer {
         txtName = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         txtName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 

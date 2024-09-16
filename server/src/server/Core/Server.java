@@ -26,7 +26,6 @@ public class Server {
         }
     }
 
-
     // Broadcast the message to all clients
     public static void broadcastMessage(Message message, ClientHandler sender) {
         for (ClientHandler clientHandler : clientHandlers) {
@@ -35,7 +34,7 @@ public class Server {
             }
         }
     }
-    
+
     // Broadcast the chat to all clients
     public static void broadcastChatMessage(String message, ClientHandler sender) {
         for (ClientHandler clientHandler : clientHandlers) {
@@ -50,7 +49,7 @@ public class Server {
                 String username = (String) message.content;
                 sender.clientName = username;
                 sender.sendMessage(gson.toJson(new Message("Login succesful", MessageType.LOGIN, Status.OK)));
-                
+
 //                if (username.equals("hung")) {
 //                    sender.clientName = username;
 //                    sender.sendMessage(gson.toJson(new Message("Login succesful", MessageType.LOGIN, Status.OK)));
@@ -58,15 +57,22 @@ public class Server {
 //                    sender.sendMessage(gson.toJson(new Message("Sai username", MessageType.LOGIN, Status.ERROR)));
 //                }
                 break;
-                
+
             case CHAT:
-//                ChatMessage chatmessage =(ChatMessage) message.content;
-//                Message<ChatMessage> mess = new Message<>(chatmessage, MessageType.CHAT, Status.OK);
-                        
+                ChatMessage chatmessage = (ChatMessage) message.content;
+                Message<ChatMessage> mess = new Message<>(chatmessage, MessageType.CHAT, Status.OK);
+
                 broadcastChatMessage(gson.toJson(message), sender);
                 break;
 
-            default:
+            case EXIT:
+                try {
+                    sender.socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Server.removeClient(sender);
+           default:
                 throw new AssertionError();
         }
     }
@@ -74,5 +80,8 @@ public class Server {
     // Remove a client when they disconnect
     public static void removeClient(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
+        System.out.println("Number: " + clientHandlers.size());
     }
 }
+
+

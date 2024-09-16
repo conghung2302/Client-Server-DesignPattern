@@ -14,5 +14,8 @@ public enum MessageType {
     @SerializedName("LEAVE")
     LEAVE,
     @SerializedName("LOGIN")
-    LOGIN
+    LOGIN,
+    
+    @SerializedName("EXIT")
+    EXIT
 }

@@ -41,15 +41,14 @@ class ClientHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            System.out.println(clientName + " has left the chat.");
-            Server.broadcastMessage(new Message(clientName, MessageType.LEAVE, Status.OK), this);
+            Server.broadcastMessage(new Message(clientName, MessageType.EXIT, Status.OK), this);
             Server.removeClient(this);
         }
     }
