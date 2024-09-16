@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import static server.Core.Server.gson;
-import server.Model.Message;
-import server.Model.MessageType;
-import server.Model.Status;
+import server.Action.Message;
+import server.Action.MessageType;
+import server.Action.Status;
 
 class ClientHandler implements Runnable {
 
@@ -57,5 +57,6 @@ class ClientHandler implements Runnable {
     // Send message to this client
     public void sendMessage(String message) {
         out.println(message);
+        out.flush();
     }
 }

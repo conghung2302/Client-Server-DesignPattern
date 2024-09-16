@@ -1,6 +1,6 @@
 package client.Core;
 
-import client.Model.Message;
+import client.Action.Message;
 import java.io.*;
 import java.net.*;
 import java.util.Observable;

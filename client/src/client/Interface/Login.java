@@ -7,9 +7,9 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 import client.Core.ClientManager;
-import client.Model.Message;
-import client.Model.MessageType;
-import client.Model.Status;
+import client.Action.Message;
+import client.Action.MessageType;
+import client.Action.Status;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,6 +24,7 @@ public class Login extends javax.swing.JFrame implements Observer {
     }
 
     void init() {
+        ClientManager.client.addObserver(this);
         this.setVisible(true);
 //        this.addWindowListener(new WindowAdapter() {
 //            public void windowClosing(WindowEvent evt) {
@@ -131,10 +132,11 @@ public class Login extends javax.swing.JFrame implements Observer {
     public void update(Observable o, Object arg) {
         String obj = (String) arg;
         Message message = ClientManager.gson.fromJson(obj, Message.class);
-                
+
         switch (message.type) {
             case LOGIN:
                 if (message.status == Status.OK) {
+                    ClientManager.client.deleteObserver(this);
                     this.dispose();
                     new Chat().setVisible(true);
                 } else {
@@ -143,6 +145,7 @@ public class Login extends javax.swing.JFrame implements Observer {
                 break;
             default:
                 throw new AssertionError();
+
         }
     }
 }

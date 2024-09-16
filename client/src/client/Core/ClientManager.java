@@ -16,7 +16,7 @@ public class ClientManager {
         client = new Client();
         if (client.StartConnect("localhost", port)) {
             client.StartThreadHandle();
-            client.addObserver(new Login());
+            new Login();
         }
     }
     

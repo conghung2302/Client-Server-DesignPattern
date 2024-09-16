@@ -1,6 +1,10 @@
 package client.Interface;
 
 import client.Core.ClientManager;
+import client.Action.Message;
+import client.Action.MessageType;
+import client.Action.Status;
+import client.Model.ChatMessage;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,7 +16,8 @@ public class Chat extends javax.swing.JFrame implements Observer {
 
     public Chat() {
         initComponents();
-        
+        ClientManager.client.addObserver(this);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -73,8 +78,11 @@ public class Chat extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        String mess = txtChat.getText().trim();
-        ClientManager.client.SendMess(mess);
+        String content = txtChat.getText().trim();
+        ChatMessage chatMessage = new ChatMessage("A", "B", content);
+        Message<ChatMessage> message = new Message<>(chatMessage, MessageType.CHAT, Status.OK);
+
+        ClientManager.client.SendMess(ClientManager.gson.toJson(message));
     }//GEN-LAST:event_btnSendActionPerformed
 
     public static void main(String args[]) {
@@ -118,9 +126,29 @@ public class Chat extends javax.swing.JFrame implements Observer {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void update(Observable o, Object arg) {
-        String s = (String)arg;
-        
-        System.out.println("chat " + s);
+    public void update(Observable o, Object arg) { // Data return a String
+        String req = (String) arg;
+        System.out.println("Chat: " + req);
+        Message<Object> chatmesMessage = ClientManager.gson.fromJson(req, Message.class);
+
+        switch (chatmesMessage.type) {
+            case CHAT:
+                ChatMessage chat = ClientManager.gson.fromJson(ClientManager.gson.toJson(chatmesMessage.content), ChatMessage.class);
+                System.out.println("Chat message content: " + chat);
+
+//                ChatMessage chat = null;
+//                if (chatmesMessage.content instanceof ChatMessage) {
+//                    chat = (ChatMessage) chatmesMessage.content;
+//                    // Now you can use the 'chat' variable as a ChatMessage object
+//                    System.out.println("Chat message content: " + chat);
+//                } else {
+//                    System.out.println("The content is not of type ChatMessage.");
+//                }
+                areaChat.append(chat.content + "\n");
+                break;
+
+            default:
+                throw new AssertionError();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package server.Model;
+package server.Action;
 
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -21,6 +21,13 @@ public class Message<T>{
         this.type = type;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" + "content=" + content + ", type=" + type + ", status=" + status + '}';
+    }
+    
+    
     
     public static void main(String[] args) {
         

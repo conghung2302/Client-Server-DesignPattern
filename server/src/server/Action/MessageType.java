@@ -1,4 +1,4 @@
-package client.Model;
+package server.Action;
 
 import com.google.gson.annotations.SerializedName;
 
