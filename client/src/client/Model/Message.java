@@ -6,8 +6,6 @@ package client.Model;
  */
 public class Message<T>{
 
-
-
     public T content;
     public MessageType type;
     public Status status;
