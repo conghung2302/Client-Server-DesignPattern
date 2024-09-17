@@ -27,10 +27,6 @@ class ClientHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
             System.out.println("A client Connected");
-//            out.println("Enter your name:");
-//            clientName = in.readLine();
-//            System.out.println(clientName + " has joined the chat.");
-//            Server.broadcastMessage(gson.toJson(jsonElement), this);
 
             String receivedMessage;
             while ((receivedMessage = in.readLine()) != null) {

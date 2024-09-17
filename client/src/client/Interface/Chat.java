@@ -94,6 +94,7 @@ public class Chat extends javax.swing.JFrame implements Observer {
         
 
         ClientManager.client.SendMess(obj.toString());
+        txtChat.setText("");
     }//GEN-LAST:event_btnSendActionPerformed
 
     public static void main(String args[]) {

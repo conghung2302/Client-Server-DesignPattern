@@ -1,0 +1,41 @@
+
+
+//  LOGIN
+client
+{
+    "content": {
+        "username": "hung"
+    },
+    "type": "LOGIN",
+    "status" : "OK"
+}
+-> Sever
+    Check
+    if True:
+        {
+            "content": {
+                "text": "Login successfull",
+                "username": "hung"
+            },
+            "type": "LOGIN",
+            "status" : "OK"
+        }
+    else:
+        {
+            "content": {
+                "text": "Sai mat khau or tai khoan",
+                "username": "hung"
+            },
+            "type": "LOGIN",
+            "status" : "ERROR"
+        }
+CHAT:
+{
+    "content": {
+        "from": "hung",
+        "to": "AAA",
+        "text": "hi"
+    },
+    "type": "CHAT",
+    "status" : "OK"
+}
