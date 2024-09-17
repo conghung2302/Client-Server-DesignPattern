@@ -1,5 +1,6 @@
 package client.Interface;
 
+import client.Action.MessageType;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -7,9 +8,9 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 import client.Core.ClientManager;
-import client.Action.Message;
-import client.Action.MessageType;
 import client.Action.Status;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javax.swing.JOptionPane;
 
 /**
@@ -86,8 +87,13 @@ public class Login extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        Message mess = new Message(txtName.getText().trim(), MessageType.LOGIN, Status.OK);
-        ClientManager.client.SendMess(ClientManager.gson.toJson(mess));
+        JsonObject obj = new JsonObject();
+        JsonObject content = new JsonObject();
+        content.addProperty("username", txtName.getText().trim());
+        obj.add("content", content);
+        obj.addProperty("type", MessageType.LOGIN.toString());
+        obj.addProperty("status", Status.OK.toString());
+        ClientManager.client.SendMess(obj.toString());
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
@@ -132,17 +138,23 @@ public class Login extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        String obj = (String) arg;
-        Message message = ClientManager.gson.fromJson(obj, Message.class);
-
-        switch (message.type) {
+        JsonObject obj = JsonParser.parseString( arg.toString()).getAsJsonObject();
+        System.out.println("client: " + obj);
+        
+        MessageType type = MessageType.valueOf(obj.get("type").getAsString());
+        Status status = Status.valueOf(obj.get("status").getAsString());
+        
+        switch (type) {
             case LOGIN:
-                if (message.status == Status.OK) {
+                if (status == Status.OK) {
                     ClientManager.client.deleteObserver(this);
                     this.dispose();
                     new Chat().setVisible(true);
                 } else {
-                    JOptionPane.showMessageDialog(null, message.content, "ERORR", JOptionPane.INFORMATION_MESSAGE);
+                    JsonObject content = obj.get("content").getAsJsonObject();
+
+                    String text = content.get("text").getAsString();
+                    JOptionPane.showMessageDialog(null, text, "ERORR", JOptionPane.INFORMATION_MESSAGE);
                 }
                 break;
             default:

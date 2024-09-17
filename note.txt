@@ -1,0 +1,13 @@
+Person person = new Person("John Doe", 30, "New York");
+
+// Create a Gson instance
+Gson gson = new Gson();
+
+// Convert the Person object to a JSON string
+String jsonString = gson.toJson(person);
+
+// Parse the JSON string back into a JsonObject
+JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+
+// Print the JsonObject
+System.out.println("JsonObject from String: " + jsonObject);

@@ -7,16 +7,16 @@ package client.Model;
 public class ChatMessage {
     public String from;
     public String to;
-    public String content;
+    public String mess;
 
-    public ChatMessage(String from, String to, String content) {
+    public ChatMessage(String from, String to, String mess) {
         this.from = from;
         this.to = to;
-        this.content = content;
+        this.mess = mess;
     }
 
     @Override
     public String toString() {
-        return "ChatMessage{" + "from=" + from + ", to=" + to + ", content=" + content + '}';
+        return "ChatMessage{" + "from=" + from + ", to=" + to + ", content=" + mess + '}';
     }
 }

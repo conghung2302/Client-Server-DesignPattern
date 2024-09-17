@@ -1,10 +1,11 @@
 package server.Core;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import server.Action.Message;
 import server.Action.MessageType;
 import server.Action.Status;
 import server.Model.ChatMessage;
@@ -27,28 +28,26 @@ public class Server {
     }
 
     // Broadcast the message to all clients
-    public static void broadcastMessage(Message message, ClientHandler sender) {
-        for (ClientHandler clientHandler : clientHandlers) {
-            if (clientHandler != sender) {
-                clientHandler.sendMessage(gson.toJson(message));
-            }
-        }
-    }
-
-    // Broadcast the chat to all clients
-    public static void broadcastChatMessage(String message, ClientHandler sender) {
+    public static void broadcastMessage(String message) {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.sendMessage(message);
         }
     }
 
-    public static void processMessage(Message message, ClientHandler sender) {
-        System.out.println("server " + message);
-        switch (message.type) {
+    public static void processMessage(String request, ClientHandler sender) {
+        
+        JsonObject obj = JsonParser.parseString(request).getAsJsonObject();
+        MessageType action = MessageType.valueOf(obj.get("type").getAsString());
+        
+        JsonObject content = obj.get("content").getAsJsonObject();
+        
+       
+        System.out.println("server " + obj);
+        switch (action) {
             case LOGIN:
-                String username = (String) message.content;
-                sender.clientName = username;
-                sender.sendMessage(gson.toJson(new Message("Login succesful", MessageType.LOGIN, Status.OK)));
+                
+                sender.clientName = content.get("username").getAsString();
+                sender.sendMessage(obj.toString());
 
 //                if (username.equals("hung")) {
 //                    sender.clientName = username;
@@ -59,20 +58,13 @@ public class Server {
                 break;
 
             case CHAT:
-                ChatMessage chatmessage = (ChatMessage) message.content;
-                Message<ChatMessage> mess = new Message<>(chatmessage, MessageType.CHAT, Status.OK);
-
-                broadcastChatMessage(gson.toJson(message), sender);
+                content.addProperty("from", sender.clientName);
+                obj.add("content", content);
+                broadcastMessage(obj.toString());
                 break;
-
-            case EXIT:
-                try {
-                    sender.socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Server.removeClient(sender);
-           default:
+                
+            
+            default:
                 throw new AssertionError();
         }
     }

@@ -1,6 +1,5 @@
 package client.Core;
 
-import client.Action.Message;
 import java.io.*;
 import java.net.*;
 import java.util.Observable;
@@ -56,8 +55,7 @@ public class Client extends Observable {
             try {
                 String receivedMessage;
                 while ((receivedMessage = in.readLine()) != null) {
-                    Message message = ClientManager.gson.fromJson(receivedMessage, Message.class);
-                    System.out.println("Received: " + message.content);
+                    System.out.println("Received: " + receivedMessage);
                     notifyObservers(receivedMessage);
                 }
             } catch (IOException e) {

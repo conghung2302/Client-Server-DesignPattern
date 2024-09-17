@@ -1,10 +1,11 @@
 package client.Interface;
 
 import client.Core.ClientManager;
-import client.Action.Message;
 import client.Action.MessageType;
 import client.Action.Status;
 import client.Model.ChatMessage;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -78,11 +79,21 @@ public class Chat extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        String content = txtChat.getText().trim();
-        ChatMessage chatMessage = new ChatMessage("A", "B", content);
-        Message<ChatMessage> message = new Message<>(chatMessage, MessageType.CHAT, Status.OK);
+        String text = txtChat.getText().trim();
+        JsonObject obj = new JsonObject();
+        
+        obj.addProperty("status", Status.OK.toString());
+        obj.addProperty("type", MessageType.CHAT.toString());
+        JsonObject content = new JsonObject();
+        
+        content.addProperty("from", "");
+        content.addProperty("to", "ALL");
+        content.addProperty("text", text);
 
-        ClientManager.client.SendMess(ClientManager.gson.toJson(message));
+        obj.add("content", content);
+        
+
+        ClientManager.client.SendMess(obj.toString());
     }//GEN-LAST:event_btnSendActionPerformed
 
     public static void main(String args[]) {
@@ -127,24 +138,19 @@ public class Chat extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) { // Data return a String
-        String req = (String) arg;
-        System.out.println("Chat: " + req);
-        Message<Object> chatmesMessage = ClientManager.gson.fromJson(req, Message.class);
+        JsonObject obj = JsonParser.parseString(arg.toString()).getAsJsonObject();
+        System.out.println("Chat: " + obj);
 
-        switch (chatmesMessage.type) {
+        JsonObject content = obj.getAsJsonObject("content");
+        MessageType type = MessageType.valueOf(obj.get("type").getAsString());
+        Status status = Status.valueOf(obj.get("status").getAsString());
+
+        switch (type) {
             case CHAT:
-                ChatMessage chat = ClientManager.gson.fromJson(ClientManager.gson.toJson(chatmesMessage.content), ChatMessage.class);
-                System.out.println("Chat message content: " + chat);
-
-//                ChatMessage chat = null;
-//                if (chatmesMessage.content instanceof ChatMessage) {
-//                    chat = (ChatMessage) chatmesMessage.content;
-//                    // Now you can use the 'chat' variable as a ChatMessage object
-//                    System.out.println("Chat message content: " + chat);
-//                } else {
-//                    System.out.println("The content is not of type ChatMessage.");
-//                }
-                areaChat.append(chat.content + "\n");
+                String mess = content.get("from").getAsString() + ": "
+                        + content.get("text").getAsString();
+                System.out.println("Chat message content: " + mess);
+                areaChat.append(mess + "\n");
                 break;
 
             default:

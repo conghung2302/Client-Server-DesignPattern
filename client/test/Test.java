@@ -1,4 +1,5 @@
 
+import client.Action.MessageType;
 import com.google.gson.JsonObject;
 
 
@@ -9,7 +10,7 @@ import com.google.gson.JsonObject;
 public class Test {
     public static void main(String[] args) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", "John Doe");
+        jsonObject.addProperty("name", MessageType.CHAT.name());
         jsonObject.addProperty("age", 30);
         jsonObject.addProperty("city", "New York");
         
@@ -17,5 +18,6 @@ public class Test {
         obj2.add("user", jsonObject);
         
         System.out.println(obj2.entrySet());
+        
     }
 }

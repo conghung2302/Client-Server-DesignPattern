@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import static server.Core.Server.gson;
-import server.Action.Message;
 import server.Action.MessageType;
 import server.Action.Status;
 
@@ -35,9 +34,8 @@ class ClientHandler implements Runnable {
 
             String receivedMessage;
             while ((receivedMessage = in.readLine()) != null) {
-                Message message = gson.fromJson(receivedMessage, Message.class);
-                System.out.println(message.content);
-                Server.processMessage(message, this);
+                System.out.println(receivedMessage);
+                Server.processMessage(receivedMessage, this);
             }
 
         } catch (IOException e) {
@@ -48,7 +46,7 @@ class ClientHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Server.broadcastMessage(new Message(clientName, MessageType.EXIT, Status.OK), this);
+//            Server.broadcastMessage(new Message(clientName, MessageType.CHAT, Status.OK), this);
             Server.removeClient(this);
         }
     }

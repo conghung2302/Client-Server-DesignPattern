@@ -1,0 +1,20 @@
+
+
+{
+    "content": {
+        "username": "hung"
+    },
+    "type": "LOGIN",
+    "status" : "OK"
+}
+
+
+{
+    "content": {
+        "from": "hung",
+        "to": "AAA",
+        "text": "hi"
+    },
+    "type": "CHAT",
+    "status" : "OK"
+}
